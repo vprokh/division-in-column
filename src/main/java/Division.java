@@ -10,6 +10,5 @@ public class Division {
 		System.out.println("Enter the second any integer: ");
 		int divider = Integer.parseInt(scanner.nextLine());
 		System.out.println(LogicDivision.makeDivision(dividend, divider));
-
 	}
 }
