@@ -1,8 +1,12 @@
 package com.division.output.impl;
 
 import com.division.output.DivisionInColumnConsoleOutput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DivisionInColumnConsoleOutputImpl implements DivisionInColumnConsoleOutput {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DivisionInColumnConsoleOutputImpl.class);
 
     private static final char NEW_LINE = '\n';
     private static final int ADDITIONAL_INDENT_LEVEL = 2;
@@ -13,7 +17,7 @@ public class DivisionInColumnConsoleOutputImpl implements DivisionInColumnConsol
     private static final char HYPHEN_SYMBOL = '-';
     private static final int HEADER_LINES_QUANTITY = 3;
     private static final String VERTICAL_BAR = "│";
-    private static final String DIVIDEND_IS_LESS_MESSAGE_FORMAT = "%s/%s=0";
+    private static final String DIVIDEND_IS_LESS_MESSAGE_FORMAT = "{}/{}=0";
 
     private final int dividend;
     private final int divisor;
@@ -28,11 +32,12 @@ public class DivisionInColumnConsoleOutputImpl implements DivisionInColumnConsol
     }
 
     @Override
+    @SuppressWarnings("java:S2629")
     public void printToConsole(int indentNumber, String divisionReminder, int spaceIndent) {
         addReminderLine(indentNumber, divisionReminder);
         modifyResultToView(spaceIndent);
 
-        System.out.println(result);
+        LOG.info(result.toString());
     }
 
     private void addReminderLine(int indentNumber, String divisionReminder) {
@@ -69,7 +74,7 @@ public class DivisionInColumnConsoleOutputImpl implements DivisionInColumnConsol
 
     @Override
     public void printIncorrectDividendMessage() {
-        System.out.printf(DIVIDEND_IS_LESS_MESSAGE_FORMAT, dividend, divisor);
+        LOG.error(DIVIDEND_IS_LESS_MESSAGE_FORMAT, dividend, divisor);
     }
 
     private String getDecresingNumberLineFormat(int intendNumber) {

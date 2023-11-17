@@ -25,6 +25,7 @@ public class DivisionInColumn {
 
 		if (dividend < divisor) {
 			divisionInColumnConsoleOutput.printIncorrectDividendMessage();
+			return;
 		}
 
 		char[] digits = String.valueOf(dividend).toCharArray();
