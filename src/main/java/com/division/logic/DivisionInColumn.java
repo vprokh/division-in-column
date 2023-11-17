@@ -8,19 +8,14 @@ public class DivisionInColumn {
 	private static final int DIGITS_COUNT_ONE = 1;
 
 	private final DivisionInColumnConsoleOutput divisionInColumnConsoleOutput;
+	private final StringBuilder reminder;
 
 	public DivisionInColumn(DivisionInColumnConsoleOutput divisionInColumnConsoleOutput) {
 		this.divisionInColumnConsoleOutput = divisionInColumnConsoleOutput;
+		reminder = new StringBuilder();
 	}
 
-	private static final String DIVIDEND_IS_LESS_MESSAGE_FORMAT = "%s/%s=0";
-
-	private final StringBuilder quotient = new StringBuilder();
-	private final StringBuilder reminder = new StringBuilder();
-
-
-	public String makeDivision(int dividend, int divisor) throws DivisonByZeroException {
-
+	public void makeDivision(int dividend, int divisor) throws DivisonByZeroException {
 		if (divisor == 0) {
 			throw new DivisonByZeroException("Divisor cannot be 0, division by zero");
 		}
@@ -29,14 +24,13 @@ public class DivisionInColumn {
 		divisor = Math.abs(divisor);
 
 		if (dividend < divisor) {
-			return String.format(DIVIDEND_IS_LESS_MESSAGE_FORMAT, dividend, divisor);
+			divisionInColumnConsoleOutput.printIncorrectDividendMessage();
 		}
 
 		char[] digits = String.valueOf(dividend).toCharArray();
 
 		int reminderNumber;
 		int multiplyResult;
-		int currentDivisionDigitsCount = getCurrentDigitsCountOfDivision(divisor);
 		int restOfDivision;
 
 		for (int i = 0; i < digits.length; i++) {
@@ -47,47 +41,22 @@ public class DivisionInColumn {
 				restOfDivision = reminderNumber % divisor;
 				multiplyResult = reminderNumber / divisor * divisor;
 
-				divisionInColumnConsoleOutput.addDivisionStep(i, String.valueOf(reminderNumber));
-				divisionInColumnConsoleOutput.addDivisionStepMinus(
-						i, String.valueOf(multiplyResult), getCurrentDigitsCountOfDivision(multiplyResult));
-
-				result.append(makeDivider(reminderNumber, tab)).append("\n");
-
-				quotient.append(reminderNumber / divisor);
+				divisionInColumnConsoleOutput.addDivisionStepDecreasingLine(i, String.valueOf(reminderNumber));
+				divisionInColumnConsoleOutput.addDivisionStepDecreaseLine(i, String.valueOf(multiplyResult));
+				divisionInColumnConsoleOutput.addDivisionStepDivider(reminder.length(), getCurrentDigitsCountOfDivision(multiplyResult));
 
 				reminder.replace(0, reminder.length(), String.valueOf(restOfDivision));
 				reminderNumber = Integer.parseInt(reminder.toString());
-			} else {
-				if (i >= currentDivisionDigitsCount)
-					quotient.append(0);
 			}
 
-			if (i == digits.length - 1) {
-				result.append(String.format("%" + (i + 2) + "s", reminderNumber.toString())).append("\n");
+			if (isLastIteration(i, digits)) {
+				divisionInColumnConsoleOutput.printToConsole(i, String.valueOf(reminderNumber), getCurrentDigitsCountOfDivision(dividend));
 			}
 		}
-		modifyResultToView(dividend, divisor);
-		return result.toString();
 	}
 
-
-	private void modifyResultToView(Integer dividend, Integer divisor) {
-		int[] index = new int[3];
-		for (int i = 0, j = 0; i < result.length(); i++) {
-			if (result.charAt(i) == '\n') {
-				index[j] = i;
-				j++;
-			}
-
-			if (j == 3)
-				break;
-		}
-
-		int tab = getCurrentDigitsCountOfDivision(dividend) + 1 - index[0];
-		result.insert(index[2], assemblyString(tab, ' ') + "│" + quotient.toString());
-		result.insert(index[1], assemblyString(tab, ' ') + "│" + assemblyString(quotient.length(), '-'));
-		result.insert(index[0], "│" + divisor);
-		result.replace(1, index[0], dividend.toString());
+	private boolean isLastIteration(int iterationIndex, char[] digits) {
+		return iterationIndex == digits.length - 1;
 	}
 
 	private int getCurrentDigitsCountOfDivision(int digitsCount) {

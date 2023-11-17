@@ -2,9 +2,13 @@ package com.division.output;
 
 public interface DivisionInColumnConsoleOutput {
 
-    void printToConsole();
+    void addDivisionStepDecreasingLine(int intendNumber, String divisionStepValue);
 
-    void addDivisionStep(int intendNumber, String divisionStepValue);
+    void addDivisionStepDecreaseLine(int intendNumber, String divisionStepValue);
 
-    void addDivisionStepMinus(int intendNumber, String divisionStepValue, int lengthOfDigits);
+    void addDivisionStepDivider(int intendNumber, int hyphenNumber);
+
+    void printIncorrectDividendMessage();
+
+    void printToConsole(int indentNumber, String value, int spaceIdent);
 }
